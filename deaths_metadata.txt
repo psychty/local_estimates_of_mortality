@@ -1,0 +1,29 @@
+Source: Public Health England, produced from Office for National Statistics (ONS) data
+
+Unit: Standardised mortality ratio (SMR)
+
+Geographic levels: Ward 2020, MSOA 2011, LTLA 2021, UTLA 2021, CCG 2020
+
+Extent(s): England
+
+Theme(s): T4 - Life Expectancy and Causes of Death
+
+Description: Standardised mortality ratio for deaths from all causes at all ages
+All-cause mortality is a fundamental and probably the oldest measure of the health status of a population. It represents the cumulative effect of the prevalence of risk factors, prevalence and severity of disease, and the effectiveness of interventions and treatment. Differences in levels of all-cause mortality reflect health inequalities between different population groups, e.g. between genders, social classes and ethnic groups.
+
+Methodology: Mortality data by five-year age group were extracted from annual files supplied to Public Health England (PHE) by the Office for National Statistics (ONS). These were deaths registered in the calendar years 2015-19 from all causes for all persons of all ages.
+Deaths were allocated to the deceased's output area (OA) of usual residence using the May 2020 version of the National Statistics Postcode Lookup. Population data are mid-year population estimates for OAs, by quinary age group, supplied by ONS. OA deaths and population estimates were aggregated to higher geographies using standard geographical lookup tables obtained from ONS Geography.
+Expected deaths were calculated by applying age-specific death rates for England in 2015-19 to each area's population. SMRs were calculated by dividing the observed total deaths in the area by the expected deaths and multiplying by 100
+Numerator. The total number of deaths among persons of all ages.
+Denominator. The sum of the age-specific (aggregated into five year age bands 0-4, 5-9 through to 90+) number of deaths from all causes that would be expected if the local area experienced the same age-specific mortality rates as for England
+95 percent confidence limits were calculated using the Byar's method for rates
+In July 2018 the Office for National Statistics published a revised policy on protecting confidentiality in tables of birth and death statistics, in order to minimise the risk of releasing personal information about an individual. Following this revision, ward level mortality indicators for the City of London and Isles of Scilly have been removed from Local Health, and if a risk of disclosure has been identified, further suppression will occur. The ONS policy link in the "to find out more" tab
+
+Formula: SMR = (O/E) * 100, where O is the total number of observed deaths (for the specific cause and age) in the local population
+and E is the total number of expected deaths (for the specific cause and age) in the local population if the local area experienced
+the same age-specific mortality rates as for England.
+
+Limitations: Copyright: Crown copyright
+Reproduction of information is subject to the terms of the Open Government Licence and the UK Government Licensing Framework.
+
+Accuracy of data: Values with a confidence interval
