@@ -1,9 +1,9 @@
 library(easypackages)
 
-libraries(c("readxl", "readr", "plyr", "dplyr", "ggplot2", "png", "tidyverse", "reshape2", "scales", 'jsonlite', 'httr', 'rvest', 'stringr', 'lemon'))
+# libraries(c("readxl", "readr", "plyr", "dplyr", "ggplot2", "png", "tidyverse", "reshape2", "scales", 'stringr'))
+libraries(c("readxl", "readr", "png", "scales", "tidyverse", 'ggtext'))
 
 github_repo <- paste0('~/Github/local_estimates_of_mortality/')
-
 
 arc_theme = function(){
   theme(
@@ -58,8 +58,6 @@ LE_data <- msoa_local_health_data %>%
   select(ID, Area_Code, Area_Name, msoa11hclnm, Sex, Value) %>% 
   mutate(Area_type_label = factor(ifelse(Area_Name == 'West Sussex', 'West Sussex', ifelse(Area_Name == 'England', 'England', 'West Sussex Neighbourhoods')), levels = c('West Sussex Neighbourhoods', 'West Sussex', 'England'))) %>% 
   arrange(Area_type_label)
-
-library(ggtext)
 
 wsx_LE <- LE_data %>% 
   filter(Area_Name == 'West Sussex') %>% 
