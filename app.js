@@ -1,10 +1,11 @@
 var width = window.innerWidth * 0.8 - 20;
+var height = width * 0.8;
 // var width = document.getElementById("daily_case_bars").offsetWidth;
-if (width > 800) {
-  var width = 800;
+if (width > 900) {
+  var width = 900;
+  var height = width * .6;
 }
 var width_margin = width * 0.15;
-var height = window.innerHeight * .75;
 
 // ! Arc data
 
@@ -357,46 +358,53 @@ var tooltip_scatter_dep_le = d3
   .select("#dep_le_scatter_vis")
   .append("div")
   .style("opacity", 0)
-  .attr("class", "tooltip_outside_box")
+  .attr("class", "tooltip_class")
   .style("position", "absolute")
-  .style("z-index", "10")
-  .style("background-color", "white")
-  .style("border", "solid")
-  .style("border-width", "1px")
-  .style("border-radius", "5px")
-  .style("font-size", ".6rem")
-  .style("padding", "10px");
+  .style("z-index", "10");
 
 var showTooltip_scatter_dep_le = function (d) {
   tooltip_scatter_dep_le
     .html(
       "<p><b>" +
-        d.Area_Name +
-        " in  " +
+        d.Sex +
+        "</b> life expectancy in " +
+        d.msoa11hclnm +
+        ", in  " +
         d.Laname +
-        "</b></p><p>"+
-        d.Sex + 
-        " life expectancy at birth in this neighbourhood is <b> " +
+        ": <b>" +
         d3.format(",.1f")(
           d.Value) +
-        " years</b>.<p>This MSOA has a population weighted deprivation score of <b>" +
-        d3.format(",.1f")(d.Pop_weighted_imd_score) +
-        "</b> and a rank of <b>" +
-        d3.format(",.0f")(d.Pop_weighted_rank) +
-        "</b> out of 6,790 neighbourhoods nationally, with 1 being most deprived.</p> "
+        " years</b></p>"
     )
     .style("opacity", 1)
-    .style("opacity", 1)
     .style("font-size", ".8rem")
+    .style("top", event.pageY - 0 + "px")
+    .style("left", event.pageX + 20 + "px")
     .style("visibility", "visible");
 
   selected_MSOA_scatter = d.Laname_ns;
+  selected_LA_scatter = d.Laname;
 
   d3.selectAll(".dot." + selected_MSOA_scatter)
     .transition()
     .duration(200)
     .style("stroke", "maroon")
     .attr("r", 9);
+
+  svg_scatter
+    .append("text")
+    .attr("text-anchor", "middle")
+    .attr("class", "scatter_chart_text")
+    .attr("y", 60)
+    .attr("x", width * 0.5)
+    .attr("opacity", 0)
+    .transition()
+    .duration(1000)
+    .attr("opacity", 1)
+    // .style("font-weight", "bold")
+    .text('All areas in ' + selected_LA_scatter + ' highlighted');
+
+
 };
 
 var Mouseleave_scatter_dep_le = function (d) {
@@ -408,6 +416,13 @@ var Mouseleave_scatter_dep_le = function (d) {
     .style('stroke', '#ffffff')
     // .style("fill", function (d) { return sex_colour_function(d.Sex)})
     .attr("r", 6);
+
+    svg_scatter.selectAll(".scatter_chart_text")
+    .transition()
+    .duration(1000)
+    .attr("opacity", 0)
+    .remove();
+
 };
 
 // Add X axis
@@ -535,6 +550,33 @@ svg_scatter
   .attr("text-anchor", "end")
   .style("font-size", ".8rem");
 
+svg_scatter
+  .append("text")
+  .attr("text-anchor", "end")
+  .attr('transform', 'rotate(-90)')
+  .attr("y", 20)
+  .attr("x", -30)
+  .attr("opacity", 1)
+  .style("font-weight", "bold")
+  .text("years")
+
+  svg_scatter
+  .append("text")
+  .attr("text-anchor", "end")
+  // .attr('transform', 'rotate(-90)')
+  .attr("y", height - 70)
+  .attr("x", function (d) {
+    return x_dep_le(
+      d3.max(dep_data, function (d) {
+        return +d.Pop_weighted_imd_score;
+      })
+    );
+  })
+  .attr("opacity", 1)
+  .style("font-size", ".8rem")
+  .style("font-weight", "bold")
+  .text("Population weighted deprivation score (area based)")
+
 sex_colour_function = d3
 .scaleOrdinal()
 .domain(['Male', 'Female'])
@@ -565,10 +607,7 @@ var dep_uptake_points = svg_scatter
 
   dep_uptake_points.exit().remove();
 
-}) // This is the end of the when data loaded scope
-
-// TODO add legend
-// TODO add wsx values to legend
+}) // This is the end of the whe
 
 // ! Map
 // L. is leaflet
