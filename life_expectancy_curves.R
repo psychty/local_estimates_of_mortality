@@ -1,7 +1,7 @@
 library(easypackages)
 
 # libraries(c("readxl", "readr", "plyr", "dplyr", "ggplot2", "png", "tidyverse", "reshape2", "scales", 'stringr'))
-libraries(c("readxl", "readr", "png", "scales", "tidyverse", 'ggtext'))
+libraries(c("readxl", "readr", "png", "scales", "tidyverse", 'ggtext', 'd3r', 'igraph'))
 
 github_repo <- paste0('~/Github/local_estimates_of_mortality/')
 
@@ -25,7 +25,7 @@ arc_theme = function(){
 }
 
 msoa_names <- read_csv('https://houseofcommonslibrary.github.io/msoanames/MSOA-Names-Latest.csv') %>%
-  select(msoa11cd, msoa11hclnm) %>%
+  select(msoa11cd, msoa11hclnm, Laname) %>%
   rename(Area_Code = msoa11cd)
 
 # Local Health data from fingertips
@@ -55,9 +55,37 @@ msoa_local_health_data <- read_csv('https://fingertips.phe.org.uk/api/all_data/c
 LE_data <- msoa_local_health_data %>% 
   filter(ID == '93283') %>% 
   left_join(msoa_names, by = 'Area_Code') %>%
-  select(ID, Area_Code, Area_Name, msoa11hclnm, Sex, Value) %>% 
+  select(ID, Area_Code, Area_Name, msoa11hclnm, Laname, Sex, Value) %>% 
   mutate(Area_type_label = factor(ifelse(Area_Name == 'West Sussex', 'West Sussex', ifelse(Area_Name == 'England', 'England', 'West Sussex Neighbourhoods')), levels = c('West Sussex Neighbourhoods', 'West Sussex', 'England'))) %>% 
-  arrange(Area_type_label)
+  mutate(msoa11hclnm = ifelse(Area_Name == 'West Sussex', 'West Sussex', ifelse(Area_Name == 'England', 'England', msoa11hclnm))) %>% 
+  arrange(Area_type_label) %>% 
+  mutate(Laname_ns = gsub(' ','_', Laname))
+
+#  Add msoa deprivation data so that we can use one data source for the scatter
+lookup <- read_csv('https://opendata.arcgis.com/datasets/65664b00231444edb3f6f83c9d40591f_0.csv') %>% 
+  select(LSOA11CD, MSOA11CD, MSOA11NM) %>% 
+  unique()
+
+IMD_2019 <- read_csv('https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/845345/File_7_-_All_IoD2019_Scores__Ranks__Deciles_and_Population_Denominators_3.csv') %>% 
+  select("LSOA code (2011)",  "Local Authority District name (2019)", "Index of Multiple Deprivation (IMD) Score",  "Total population: mid 2015 (excluding prisoners)" ) %>% 
+  rename(LSOA11CD = 'LSOA code (2011)',
+         LTLA = 'Local Authority District name (2019)',
+         IMD_2019_score = 'Index of Multiple Deprivation (IMD) Score',
+         Population = 'Total population: mid 2015 (excluding prisoners)') %>%
+  mutate(Pop_weighted_score = IMD_2019_score * Population) %>% 
+  left_join(lookup, by = 'LSOA11CD') %>% 
+  group_by(MSOA11CD) %>% 
+  summarise(Pop_weighted_imd_score = sum(Pop_weighted_score),
+            Population = sum(Population)) %>% 
+  mutate(Pop_weighted_imd_score = Pop_weighted_imd_score / Population) %>% 
+  arrange(desc(Pop_weighted_imd_score)) %>% 
+  mutate(Pop_weighted_rank = rank(desc(Pop_weighted_imd_score))) %>% 
+  left_join(read_csv('https://houseofcommonslibrary.github.io/msoanames/MSOA-Names-Latest.csv')[c('msoa11cd', 'msoa11hclnm')], by = c('MSOA11CD' = 'msoa11cd')) %>% 
+  select(MSOA11CD, msoa11hclnm, Population, Pop_weighted_imd_score, Pop_weighted_rank) %>% 
+  mutate(Pop_weighted_decile = abs(ntile(Pop_weighted_imd_score, 10) - 11)) 
+
+LE_data <- LE_data %>% 
+  left_join(IMD_2019[c('MSOA11CD', 'Pop_weighted_imd_score', 'Pop_weighted_rank')], by = c('Area_Code' = 'MSOA11CD'))
 
 wsx_LE <- LE_data %>% 
   filter(Area_Name == 'West Sussex') %>% 
@@ -81,7 +109,6 @@ highest_msoa_males <- LE_data %>%
 highest_msoa_females <- LE_data %>% 
   filter(Sex == 'Female') %>% 
   filter(Value == max(Value, na.rm = TRUE))
-
 
 WSX_male_LE_data_text <- paste0('The gap in male life expectancy<br>between the highest neighbourhood (', highest_msoa_males$msoa11hclnm, ', ', round(highest_msoa_males$Value, 1), ' years) and the lowest (', lowest_msoa_males$msoa11hclnm, ', ', round(lowest_msoa_males$Value,1), ' years) in West Sussex is <b>', round(highest_msoa_males$Value - lowest_msoa_males$Value, 1), ' years</b>.')
 
@@ -171,13 +198,53 @@ LE_arc <- ggplot(LE_data) +
                     name = '') +
     labs(title = 'Life expectancy at birth; five year pooled data (2015-2019); West Sussex neighbourhoods (Middle-layer Super Output Areas); by sex',
        subtitle = 'Data source: Public Health England analysis of ONS death registration data and mid-year population estimates.',
-       caption = 'Life expectancy is an estimate of the average number of years a new-born baby would survive if he or she experienced the age-specific mortality rates\nfor that area and time period throughout his or her life.\nEach line represents a neighbourhood area within West Sussex with male llife expectancy along the top and female life expectancy at the bottom.\nNote that the time period included in this metric is prior to the COVID-19 pandemic.') +
+       caption = 'Life expectancy is an estimate of the average number of years a new-born baby would survive if he or she experienced the age-specific mortality rates\nfor that area and time period throughout his or her life.\nEach line represents a neighbourhood area within West Sussex with male life expectancy along the top and female life expectancy at the bottom.\nNote that the time period included in this metric is prior to the COVID-19 pandemic.') +
   arc_theme()
 
-png(paste0(github_repo, '/Figure_1_West_Sussex_MSOA_LE_Arc.png'),
+png(paste0(github_repo, '/Outputs/Figure_1_West_Sussex_MSOA_LE_Arc.png'),
     width = 1580,
     height = 950,
     res = 120)
 print(LE_arc)
 dev.off()
 
+# For d3 plotting ####
+links <- LE_data %>% 
+  mutate(target = Value,
+         source = 0) %>% 
+  select(source, target, names(LE_data)) %>% 
+  filter(!is.na(Value)) %>% 
+  filter(Sex == 'Male')
+
+# Transform it in a graph format
+network <- graph_from_data_frame(d=links, directed=F)
+
+# Transform it in a JSON format for d3.js
+data_json <- d3_igraph(network)
+
+# Save this file
+data_json %>%  
+  write_lines(paste0(github_repo,'/Outputs/male_le_arc_data.json'))
+
+links <- LE_data %>% 
+  mutate(target = Value,
+         source = 0) %>% 
+  select(source, target, names(LE_data)) %>% 
+  filter(!is.na(Value)) %>% 
+  filter(Sex == 'Female')
+
+# Transform it in a graph format
+network <- graph_from_data_frame(d=links, directed=F)
+
+# Transform it in a JSON format for d3.js
+data_json <- d3_igraph(network)
+
+# Save this file
+data_json %>%  
+  write_lines(paste0(github_repo,'/Outputs/female_le_arc_data.json'))
+
+LE_data %>% 
+  ggplot(aes(x = Pop_weighted_imd_score,
+             y = Value,
+             color = Sex)) +
+  geom_point()
