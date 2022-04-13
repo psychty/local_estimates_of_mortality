@@ -170,7 +170,7 @@ arc_svg
   .transition()
   .duration(1000)
   .attr("opacity", 1)
-  .text("In this neighbourhood, there is a " + d3.format(',.1f')(female_chosen_LE_value - male_chosen_LE_value) + ' year gap');
+  .text("In this area, there is a " + d3.format(',.1f')(female_chosen_LE_value - male_chosen_LE_value) + ' year gap');
 
   arc_svg
   .append("text")
@@ -331,21 +331,6 @@ arc_svg
 var dep_data = male_arc_data.responseJSON.links.concat(female_arc_data.responseJSON.links).filter(function(d){
   return d.Area_Name != 'West Sussex' && d.Area_Name != 'England'}) // Join male and female arc data and exclude wsx and england (as they wont have a population weighted deprivation score)
 
-ltla_area_scatter_areas = ['Adur', 'Arun', 'Chichester', 'Crawley','Horsham', 'Mid_Sussex', 'Worthing']
-
-var ltla_scatter_colour_func = d3
-  .scaleOrdinal()
-  .domain(ltla_area_scatter_areas)
-  .range([
-    "#0E2F6A",
-    "#490B2F",
-    "#880D2A",
-    "#B02C1A",
-    "#FD7726",
-    "#FDD147",
-    "#8CC216",
-  ]);
-
 var svg_scatter = d3
   .select("#dep_le_scatter_vis")
   .append("svg")
@@ -403,7 +388,6 @@ var showTooltip_scatter_dep_le = function (d) {
     .attr("opacity", 1)
     // .style("font-weight", "bold")
     .text('All areas in ' + selected_LA_scatter + ' highlighted');
-
 
 };
 
@@ -610,8 +594,37 @@ var dep_uptake_points = svg_scatter
 }) // This is the end of the whe
 
 // ! Map
+
+// TODO Three layers - male / female / gap 
+
+
+function getLEColor(d) {
+  return d > 90   ? '#9f00fa' :
+         d > 87.5 ? '#fa00c6' :
+         d > 85   ? '#f75fcb' :
+         d > 82.5 ? '#f68cce' :
+         d > 80   ? '#FFF4C1' :
+         d > 77.5 ? '#f9c66f' :
+         d > 75   ? '#fcb333' :
+         d > 72.5 ? '#ffa200' :
+         d > 70   ? '#ff7700' :
+        'red'}
+
+function getLE_gap_Color(d) {
+  return d > 12 ? '#0c2c84' :
+         d > 10 ? '#225ea8' :
+         d > 8  ? '#1d91c0':
+         d > 6  ? '#41b6c4':
+         d > 4  ? '#7fcdbb':
+         d > 2  ? '#c7e9b4':
+         d > 0  ? '#ffffcc':
+                'red'}
+        
+
 // L. is leaflet
 var tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+var tileUrl_bw = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+
 var attribution =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Contains Ordnance Survey data © Crown copyright and database right 2022';
 
@@ -625,13 +638,32 @@ var msoa_le = $.ajax({
   },
 });
 
-function leColour(feature) {
+function male_leColour(feature) {
   return {
-    // fillColor: setleColour(feature.properties.PCN),
-    // color: setleColour(feature.properties.PCN),
-    fillColor: "yellow",
+    fillColor: getLEColor(feature.properties.Life_expectancy_at_birth_male),
+   // color:  getLEColor(feature.properties.Life_expectancy_at_birth_male),
+    color: '#e5e5e5',
     weight: 1,
-    fillOpacity: 0.5,
+    fillOpacity: 1,
+  };
+}
+function female_leColour(feature) {
+  return {
+    fillColor: getLEColor(feature.properties.Life_expectancy_at_birth_female),
+   // color:  getLEColor(feature.properties.Life_expectancy_at_birth_male),
+    color: '#e5e5e5',
+    weight: 1,
+    fillOpacity: 1,
+  };
+}
+
+function le_gap_Colour(feature) {
+  return {
+    fillColor: getLE_gap_Color(Math.abs(feature.properties.Life_expectancy_at_birth_female - feature.properties.Life_expectancy_at_birth_male)),
+   // color:  getLEColor(feature.properties.Life_expectancy_at_birth_male),
+    color: '#e5e5e5',
+    weight: 1,
+    fillOpacity: 1,
   };
 }
 
@@ -639,17 +671,100 @@ function leColour(feature) {
 $.when(msoa_le).done(function () {
   var map = L.map("map_1_id").setView([50.8379, -0.7827], 10);
 
-  var basemap = L.tileLayer(tileUrl, { attribution }).addTo(map);
+  L.tileLayer(tileUrl_bw, { attribution }).addTo(map);
 
-  var msoa_boundary = L.geoJSON(msoa_le.responseJSON, { style: leColour })
+  var msoa_male_le_boundary = L.geoJSON(msoa_le.responseJSON, { style: male_leColour })
     .addTo(map)
     .bindPopup(function (layer) {
       return (
         "<Strong>" +
         layer.feature.properties.Msoa_name +
-        "</Strong><br><br>Male life expectancy: "
-      );
+        "</Strong><br><br>Male life expectancy: <b>" +
+        d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_male) +
+        ' years</b><br>Female life expectancy: <b>' +
+        d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_female) +
+        ' years</b><br><br>In this neighbourhood, the gap between male and female life expectancy is <b>' +
+        d3.format(',.1f')(Math.abs(layer.feature.properties.Life_expectancy_at_birth_female - layer.feature.properties.Life_expectancy_at_birth_male)) +
+        ' years</b>.');
     });
 
-  map.fitBounds(msoa_boundary.getBounds());
+    var msoa_female_le_boundary = L.geoJSON(msoa_le.responseJSON, { style: female_leColour })
+    // .addTo(map)
+    .bindPopup(function (layer) {
+      return (
+        "<Strong>" +
+        layer.feature.properties.Msoa_name +
+        "</Strong><br><br>Male life expectancy: <b>" +
+        d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_male) +
+        ' years</b><br>Female life expectancy: <b>' +
+        d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_female) +
+        ' years</b><br><br>In this neighbourhood, the gap between male and female life expectancy is <b>' +
+        d3.format(',.1f')(Math.abs(layer.feature.properties.Life_expectancy_at_birth_female - layer.feature.properties.Life_expectancy_at_birth_male)) +
+        ' years</b>.');
+    });
+
+    var msoa_le_gap_boundary = L.geoJSON(msoa_le.responseJSON, { style: le_gap_Colour })
+    // .addTo(map)
+    .bindPopup(function (layer) {
+      return (
+        "<Strong>" +
+        layer.feature.properties.Msoa_name +
+        "</Strong><br><br>Male life expectancy: <b>" +
+        d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_male) +
+        ' years</b><br>Female life expectancy: <b>' +
+        d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_female) +
+        ' years</b><br><br>In this neighbourhood, the gap between male and female life expectancy is <b>' +
+        d3.format(',.1f')(Math.abs(layer.feature.properties.Life_expectancy_at_birth_female - layer.feature.properties.Life_expectancy_at_birth_male)) +
+        ' years</b>.');
+    });
+
+var legend_le_map = L.control({position: 'bottomright'});
+legend_le_map.onAdd = function (map) {
+    
+       var div = L.DomUtil.create('div', 'info legend'),
+            grades = [70, 72.5, 75, 77.5, 80, 82.5, 85, 87.5, 90],
+            labels = ['Life expectancy<br>at birth (years)'];
+    
+       for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+            labels.push(
+                '<i style="background:' + getLEColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + ' years' : '+ years'));
+       }
+       div.innerHTML = labels.join('<br>');
+       return div;
+    };
+    
+    legend_le_map.addTo(map);
+
+    var legend_le_gap_map = L.control({position: 'bottomleft'});
+    legend_le_gap_map.onAdd = function (map) {
+        
+           var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0,2,4,6,8,10,12],
+                labels = ['Gap in life expectancy<br>at birth (years)'];
+        
+           for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                labels.push(
+                    '<i style="background:' + getLE_gap_Color(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + ' years' : '+ years'));
+           }
+           div.innerHTML = labels.join('<br>');
+           return div;
+        };
+        
+        legend_le_gap_map.addTo(map);   
+    
+var baseMaps_map_4 = {
+  "Male life expectancy at birth": msoa_male_le_boundary,
+  "Female life expectancy at birth": msoa_female_le_boundary,
+  "Gap between male and female LE": msoa_le_gap_boundary,
+  };
+
+ L.control
+ .layers(baseMaps_map_4, '', { collapsed: false })
+ .addTo(map);
+
+  map.fitBounds(msoa_male_le_boundary.getBounds());
 });

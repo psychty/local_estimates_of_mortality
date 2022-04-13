@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,700;1,500&display=swap" rel="stylesheet">
   </head>
   <body>
     <h1>Local variation in mortality and cause of death in West Sussex; 2022</h1>
@@ -35,10 +35,14 @@
     <p>Hover over any line to show more information about the life expectancy of both males, and females, in that neighbourhood. Note that the time period included in this metric is prior to the COVID-19 pandemic.</p>
     <h2>Visualising inequalities in life expectancy; West Sussex MSOAs; 2015-2019;</h2>  
     <div id = 'arc_vis'></div>   
-     
-    <!-- <div id="map_1_id"></div> -->
+     <p>The map below shows the geographical variation in life expectancy at birth across the county. By default, it shows male life expectancy but you can change this using the buttons at the top of the map. You can also view areas by how big the gap in life expectancy is between males and females.</p>
+     <p>There are two areas (Cowfold & Partridge Green in Horsham and Yapton & Climping in Arun) where male life expectancy at birth is actually higher than female life expectancy.</p>
+     <h1>Mapping life expectancy variation</h1>
+    <div id="map_1_id"></div>
+    <p class = 'good_to_know'>Note that not all neighbourhoods have a life expectancy value. This is the case for male life expectancy in Bewbush in Crawley. This is for data quality reasons as estimates are uncertain in these areas.</p>
+    <p>The map illustrates that in parts of the county there are there are large variations in life expectancy in neighbourhoods quite close together, in Crawley for example.</p>
 
-    <h2>Life expectancy by deprivation</h2>
+    <h2>Life expectancy by area deprivation</h2>
     <p>The Indices of Deprivation are an area-based measure of relative levels of deprivation in small areas, (Lower Super Output Areas (LSOAs), which contain approximately 1,500 people). It can be used to compare the deprivation across different areas, identify the most deprived areas within a larger geography (for example in the CCG), and to examine which domains of deprivation are more or less prominent in an area. The Indices cannot be used to quantify how deprived an area is (nor can it say by how much one area is more deprived than another), and there are different indices of deprivation for Wales, Scotland and Northern Ireland (so comparisons cannot be made across countries).</p>
     <p>The indices are published by the Department for Communities and Local Government every 3-4 years and are widely used, notably in funding allocations and targeting. The most recent update is the ID2019, released in October 2019. ID2019 is made up of seven domains of deprivation, although each domain is not given equal weighting. From these, an overall score of small area deprivation is calculated; these are then ranked from most deprived (1) to least deprived (32,844). It is important to note that the indices measure deprivation and not affluence (the least deprived area may not necessarily be the most affluent).</p>
     <p>The IMD 2019 score is provided at Lower layer Super Output Area (LSOA) level, and we have used population weighted averages to aggregate this up to Middle layer Super Output Area (MSOA) level to coincide with the geography at which vaccination statistics are published.</p>

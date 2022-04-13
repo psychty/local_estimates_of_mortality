@@ -31,6 +31,7 @@ a {
 .good_to_know {
   border: 2px solid #cc0052;
   border-radius: 5px;
+  font-size: .8rem;
   padding: 10px;
   padding-top: 5px;
 }
@@ -42,8 +43,7 @@ a {
 .arc_chart_caption {
   font-size: .8rem;
   font-style: italic;
- }
- 
+ } 
 
 .arc_axis {
   font-size: .7rem;
@@ -54,7 +54,6 @@ a {
  stroke:darkred;
  stroke-width: 2px;
 }
-
 
 .tooltip_class {
   max-width: 200px;
@@ -68,3 +67,18 @@ a {
   text-align: left !important;
 }
 
+.legend {
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 5px;
+  line-height: 18px;
+  color: #555;
+}
+.legend i {
+   width: 18px;
+   height: 18px;
+   border-radius: 50%;
+   float: left;
+   margin-right: 8px;
+   opacity: 1;
+} 
