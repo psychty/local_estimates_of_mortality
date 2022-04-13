@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Local variation in Life Expectancy and Mortality; 2015-2019</title>
+    <title>Local variation in Life Expectancy; 2015-2019</title>
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
@@ -17,11 +17,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,700;1,500&display=swap" rel="stylesheet">
   </head>
   <body>
-    <h1>Local variation in mortality and cause of death in West Sussex; 2022</h1>
-    <p>This short report shows the local variation in life expectancy and causes of death for small areas within West Sussex called Middle-layer Super Output Areas (MSOAs). MSOAs have an average population size of 7,200 residents and roughly 4,000 households (at the last census in 2011). MSOAs are often used in reporting of demographic and health related data at a granular level as the whole of England and Wales can be broken down into these small areas which have a reasonably consistent population size. However, the boundaries of MSOAs can sometimes be difficult to interpret, particularly for those more familiar with wards as a geography. The difficulty of using wards as a basis for small area differences is that ward boundaries change frequently and can cover a population varying from around 1,000 to 30,000 people.</p>
-    <p>The House of Commons Library (2019) derived a set of recognisable names for MSOAs based on the towns, villages and neighbourhoods that they cover. Whilst these are not the official names, we present these names alongside the MSOA code to aid interpretation of local areas.</p>
     <p class = 'good_to_know'>Note: this page is not currently accessibility friendly, due to some of the interactive elements on some figures and the maps. We are working to create a print and screen reader friendly version of the site as soon as possible. If you need help with any part of the analyses below, please email jsna[at]westsussex.gov.uk</p>
     <p>
+    <h1>Local variation in mortality and cause of death in West Sussex; 2022</h1>
+    <p>This short report shows the local variation in life expectancy and causes of death for small areas within West Sussex called Middle-layer Super Output Areas (MSOAs). MSOAs have an average population size of 7,200 residents and roughly 4,000 households (at the last census in 2011). MSOAs are often used in reporting of demographic and health related data at a granular level as the whole of England and Wales can be broken down into these small areas which have a reasonably consistent population size.</p> 
+    <p>Life expectancy is an estimate of the average number of years a new-born baby would survive if he or she experienced the age-specific mortality rates for that area and time period throughout his or her life. Life expectancy at birth is a useful summary measure of all-cause mortality as it quantifies the differences between areas in units (years of life) that are fairly readily understood and meaningful. Differences in health expectancies reflect health inequalities between different population groups such as between males and females, social classes and ethnic groups. Life expectancy at birth is calculated separately for males and females and in this analysis we explore differences between males and females in different small areas.</p>  
+    <p>At small area level, such as neighbourhoods, the number of deaths or people with certain conditions can be relatively small and as such, any variation can have a big impact. We often group or pool the number of deaths over a longer time period (such as collating five years of data for MSOA based life expectancy estimates) and also look at confidence intervals of estimates when deciding if one areas is bigger/smaller or better/worse than another.</p>
+
+    <div class = 'good_to_know'>
+      <p>Names and boundaries of MSOAs can sometimes be difficult to interpret, particularly for those more familiar with wards as a geography. The difficulty of using wards as a basis for small area differences is that ward boundaries change frequently and can cover a population varying from around 1,000 to 30,000 people.</p>
+      <p>The House of Commons Library (2019) derived a set of recognisable names for MSOAs based on the towns, villages and neighbourhoods that they cover. Whilst these are not the official names, we present these names alongside the MSOA code to aid interpretation of local areas.</p>
+    </div>
+
       Data shown in this analysis are reproduced from
       <a href="">Local Health</a> under the Open Government Licence and the UK
       Government Licensing Framework.
@@ -29,7 +36,7 @@
 
     <section id = 'LE'>
     <h1>Life Expectancy at birth; five year pooled data (2015-2019) West Sussex neighbourhoods (Middle-layer Super Output Areas)</h1>
-    <p>Life expectancy is an estimate of the average number of years a new-born baby would survive if he or she experienced the age-specific mortality rates for that area and time period throughout his or her life.</p>  
+    
     <p>Males born in West Sussex can expect to live, on average, <b>80.7 years</b>. This is <b>3.4 years</b> lower than the life expectancy at birth for females in the county (<b>84.2 years</b>). Compared to England overall, life expectancy at birth is around one year higher in West Sussex, and this is for both males and females. However, there is a lot of variation in life expectancy across smaller areas in the county. Someone born in the highest </p>
     <p>The figure below shows the life expectancy at birth for males (the top, orange lines) and females (the bottom, blue lines). You can see that male life expectancy tends to be lower for all areas although the gap (between the highest life expectancy area and the lowest) is similar for both sexes. Indeed, the gap in male life expectancy between the highest neighbourhood (West Chiltington Common in Horsham, 86.7 years) and the lowest (Littlehampton West and River in Arun, 72.5 years) is 14.2 years. Females born in the highest life expectancy neighbourhood (Maidenbower East and Worth in Crawley, 91.5 years) can expect to live, on average, 14.5 years longer than females born in the lowest life expectancy neighbourhood (Bognor Regis Central in Arun, 77 years).</p>
     <p>Hover over any line to show more information about the life expectancy of both males, and females, in that neighbourhood. Note that the time period included in this metric is prior to the COVID-19 pandemic.</p>
@@ -47,10 +54,8 @@
     <p>The indices are published by the Department for Communities and Local Government every 3-4 years and are widely used, notably in funding allocations and targeting. The most recent update is the ID2019, released in October 2019. ID2019 is made up of seven domains of deprivation, although each domain is not given equal weighting. From these, an overall score of small area deprivation is calculated; these are then ranked from most deprived (1) to least deprived (32,844). It is important to note that the indices measure deprivation and not affluence (the least deprived area may not necessarily be the most affluent).</p>
     <p>The IMD 2019 score is provided at Lower layer Super Output Area (LSOA) level, and we have used population weighted averages to aggregate this up to Middle layer Super Output Area (MSOA) level to coincide with the geography at which vaccination statistics are published.</p>
     <p>The blue circles show female life expectancy and the orange circles denote male life expectancy.</p>
-
-    <div id = 'dep_le_scatter_vis'></div>
-
     <p>The scatterplot shows that those neighbourhoods with the highest relative deprivation (those on the right hand side) tend to have the lowest life expectancy at birth; this is the case for both males and females.</p>
+    <div id = 'dep_le_scatter_vis'></div>
 
   </section>
 
