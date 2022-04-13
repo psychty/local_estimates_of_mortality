@@ -7,7 +7,6 @@ if (width > 900) {
 var width_margin = width * 0.15;
 
 // ! Arc data
-
 var male_arc_data = $.ajax({
   url: './Outputs/male_le_arc_data.json',
   dataType: "json",
@@ -74,7 +73,6 @@ var x_arc = d3.scaleLinear()
 
 // ! Arcs
 // Add arcs between nodes. This is tricky.
-
 // Links are provided between nodes -id-, NOT between node names so we have to do a link between this id and the name
 var idToNode_male = {};
 male_arc_data.responseJSON.nodes.forEach(node =>
@@ -324,6 +322,78 @@ arc_svg
 .style("fill", function(d){ return(big_area_colours(d.Area_Name))})
 .on('mouseover', arc_mouseover_function)
 .on('mouseout', arc_mouseout_function)
+
+
+arc_svg
+.append("circle")
+.attr("cx", 20)
+.attr('cy', height -90)
+.attr("r", 4)
+.style("fill", '#ff9169')
+
+arc_svg
+.append("circle")
+.attr("cx", 20)
+.attr('cy', height -75)
+.attr("r", 4)
+.style("fill", '#94e2ff')
+
+arc_svg
+.append("circle")
+.attr("cx", 20)
+.attr('cy', height -30)
+.attr("r", function(d){ return(big_area_size('England'))})
+.style("fill", function(d){ return(big_area_colours('England'))})
+
+arc_svg
+.append("circle")
+.attr("cx", 20)
+.attr('cy', height -50)
+.attr("r", function(d){ return(big_area_size('West Sussex'))})
+.style("fill", function(d){ return(big_area_colours('West Sussex'))})
+
+arc_svg
+.append("text")
+.attr("text-anchor", "left")
+.attr('class', 'arc_key_title')
+.attr("x", 15)
+.attr('y', height -105)
+.text('Key')
+
+
+arc_svg
+.append("text")
+.attr("text-anchor", "left")
+.attr('class', 'arc_key_text')
+.attr("x", 35)
+.attr('y', height -85)
+.text('Males')
+
+arc_svg
+.append("text")
+.attr("text-anchor", "left")
+.attr('class', 'arc_key_text')
+.attr("x", 35)
+.attr('y', height -70)
+.text('Females')
+
+arc_svg
+.append("text")
+.attr("text-anchor", "left")
+.attr('class', 'arc_key_text')
+.attr("x", 35)
+.attr('y', height -45)
+.text('West Sussex')
+
+arc_svg
+.append("text")
+.attr("text-anchor", "left")
+.attr('class', 'arc_key_text')
+.attr("x", 35)
+.attr('y', height -25)
+.text('England')
+
+
 
 // ! Deprivation scatter plot
 

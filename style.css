@@ -40,6 +40,15 @@ a {
  font-size: .9rem;
 }
 
+.arc_key_text {
+  font-size: .8rem;
+}
+
+.arc_key_title {
+  font-size: .9rem;
+  font-weight: bold;
+}
+
 .arc_chart_caption {
   font-size: .8rem;
   font-style: italic;
