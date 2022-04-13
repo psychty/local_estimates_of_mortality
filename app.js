@@ -1,6 +1,5 @@
 var width = window.innerWidth * 0.8 - 20;
 var height = width * 0.8;
-// var width = document.getElementById("daily_case_bars").offsetWidth;
 if (width > 900) {
   var width = 900;
   var height = width * .6;
@@ -21,7 +20,7 @@ var male_arc_data = $.ajax({
 var female_arc_data = $.ajax({
   url: './Outputs/female_le_arc_data.json',
   dataType: "json",
-  success: console.log("Male arc data successfully loaded."),
+  success: console.log("Female arc data successfully loaded."),
   error: function (xhr) {
     alert(xhr.statusText);
   },
