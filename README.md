@@ -8,7 +8,7 @@ It will compliment the GBD estimates that model ill health and mortality at uppe
 
 # Data
 
-The data used in this report come from the https://www.localhealth.org.uk/ data store from Public Health England.
+The data used in this report come from the Local Health profiles currently hosted on the Department of Health & Social Care Fingertips data store [fingertips.phe.org.uk/profile/local-health/data](https://fingertips.phe.org.uk/profile/local-health/data#page/0) .
 
 The data is reproduced under Open Government Licence.
 

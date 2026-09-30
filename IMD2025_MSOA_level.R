@@ -1,84 +1,10 @@
 
 # Higher geography IMD
 
-packages <- c('tidyverse', 'scales','showtext', 'strex',  "viridis", "PHEindicatormethods", "lemon", 'ggmap', 'sf', 'sfnetworks', 'tidygraph','leaflet', 'leaflet.extras', 'PostcodesioR', 'htmlwidgets', 'rmapshaper', 'purrr', 'osrm', 'ukpolice', 'readxl')
+packages <- c('tidyverse', 'scales','showtext', 'strex',  "viridis", "PHEindicatormethods", "lemon", 'ggmap', 'sf', 'sfnetworks', 'tidygraph','leaflet', 'leaflet.extras', 'PostcodesioR', 'htmlwidgets', 'rmapshaper', 'purrr', 'readxl')
 
 install.packages(setdiff(packages, rownames(installed.packages())))
 easypackages::libraries(packages)
-
-# directories
-geography_directory <- './Public Health and Social Research Unit - Tools/Geographies/'
-font_pathway <- './Public Health and Social Research Unit - Tools/Fonts/'
-data_directory <- './Hospital Activity/HES - CONFIDENTIAL/HDIS/Alcohol/'
-premises_data_directory <- './Alcohol/Licensing/Alcohol and the environment/'
-output_directory <- './Alcohol/Licensing/Alcohol and the environment/ready_reckoner/'
-
-# Fonts  #####
-font_paths(font_pathway)
-
-font_add(family = "aptos", "aptos.ttf")
-font_add(family = "aptosb", "aptos-bold.ttf")
-
-showtext_auto(TRUE)
-
-# Set font size
-font_size <- 18
-
-# theme for maps which are drawn in ggplot
-map_theme = function(){
-  theme( 
-    plot.title.position = "plot",
-    plot.title = element_text(colour = "#000000", family = 'aptosb', size = font_size, lineheight = .5), 
-    plot.subtitle = element_text(colour = "#000000", family = 'aptos', size = font_size, lineheight = .5),
-    plot.caption = element_text(colour = "#000000", family = 'aptos', size = font_size, lineheight = .5),
-    panel.background = element_blank(),  
-    panel.border = element_blank(),
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank(), 
-    strip.text = element_text(colour = "white"), 
-    strip.background = element_rect(fill = "#ffffff"), 
-    axis.title = element_blank(),    
-    axis.ticks = element_blank(),
-    axis.text = element_blank(), 
-    legend.title = element_text(size = font_size - 2, family = 'aptosb'),
-    legend.text = element_text(size = font_size - 2, family = 'aptos'),
-    legend.margin = margin(t = 0),
-    legend.key.size = unit(.35, 'cm'),
-    legend.spacing.y = unit(.5, 'mm'),
-    legend.position = "bottom", 
-    text = element_text(size = font_size - 2, family = 'aptos')) 
-} 
-
-# adding ph_theme for ggplot
-ph_theme = function(){
-  theme(
-    plot.title.position = "plot",
-    plot.title = element_text(colour = "#000000", size = font_size, family = 'aptosb', lineheight = .5),
-    plot.subtitle = element_text(colour = "#000000", size = font_size, family = 'aptos', lineheight = .5),
-    plot.caption = element_text(colour = "#000000", size = font_size, family = 'aptos', lineheight = .5),
-    panel.background = element_rect(fill = '#ffffff'),
-    panel.grid.major.y = element_line(colour = "#E7E7E7", size = .3),
-    panel.grid.major.x = element_blank(),
-    plot.margin = margin(t = 5.5, r = 20, b = 5.5, l = 5.5),
-    strip.text = element_text(colour = "#000000", size = font_size),
-    strip.background = element_blank(),
-    legend.title = element_text(colour = "#000000", size = font_size, family = "aptosb", lineheight = .5),
-    legend.background = element_rect(fill = "#ffffff"),
-    legend.key = element_rect(fill = "#ffffff", colour = "#ffffff"),
-    legend.key.size = unit(.8, "line"),
-    legend.text = element_text(colour = "#000000", size = font_size, lineheight = .25),
-    legend.position = 'top',
-    legend.box = "vertical",
-    legend.margin = margin(t = 0),
-    legend.spacing.y = unit(.5, 'mm'),
-    axis.text.x = element_text(size = font_size -2, angle = 90, hjust = .5, vjust = 0, colour = '#000000'),
-    axis.text.y = element_text(size = font_size -2, colour = '#000000'),
-    axis.ticks = element_line(colour = "#dbdbdb", linewidth = .1),
-    axis.title =  element_text(colour = "#000000", size = font_size -2, family = 'aptosb', lineheight = .5),
-    axis.line = element_line(colour = "#dbdbdb", , linewidth = .1),
-    text = element_text(family = 'aptos', colour = '#000000', size = 16, lineheight = 0.5)
-  )}
-
 
 
 IMD_df <- read_csv(url('https://assets.publishing.service.gov.uk/media/68ff5daabcb10f6bf9bef911/File_7_IoD2025_All_Ranks_Scores_Deciles_Population_Denominators.csv')) %>% 
@@ -105,7 +31,6 @@ Pop_in_neighbourhood <- IMD_df %>%
   group_by(MSOA21CD, MSOA21NM) %>% 
   mutate(Proportion = Population / sum(Population)) %>% 
   filter(IMD_Quintile == 'Quintile 1 (most deprived 20%)')
-
 
 IMD_weighted <- IMD_df %>% 
   mutate(Weighted_score = IMD_Score * Overall_denominator) %>% 
@@ -135,7 +60,7 @@ IMD_weighted <- IMD_df %>%
   filter(str_detect(MSOA21NM, 'Adur|Arun|Chichester|Crawley|Horsham|Mid Sussex|Worthing'))
 
 IMD_weighted %>% 
-  write_csv(., paste0(output_directory, 'IMD2025_pop_weighted_MSOA_scores.csv'))
+  write_csv(., paste0(github_repo, 'IMD2025_pop_weighted_MSOA_scores.csv'))
 
 # Perhaps we also want proportion of area population in most deprived quintile.
 

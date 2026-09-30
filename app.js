@@ -101,8 +101,8 @@ chosen_area_male_data = male_arc_data.responseJSON.links.filter(function(d,i){
   return d.Area_Code === chosen_area})
 male_chosen_LE_value = chosen_area_male_data[0].Value;
 
-chosen_area_name = chosen_area_male_data[0].msoa11hclnm
-chosen_area_name_official = chosen_area_male_data[0].Area_Name
+chosen_area_name = chosen_area_male_data[0].msoa21hclnm
+chosen_area_name_official = chosen_area_male_data[0].MSOA21NM
 
 chosen_area_female_data = female_arc_data.responseJSON.links.filter(function(d,i){
   return d.Area_Code === chosen_area})
@@ -393,279 +393,9 @@ arc_svg
 .attr('y', height -25)
 .text('England')
 
-
-
-// ! Deprivation scatter plot
-
-var dep_data = male_arc_data.responseJSON.links.concat(female_arc_data.responseJSON.links).filter(function(d){
-  return d.Area_Name != 'West Sussex' && d.Area_Name != 'England'}) // Join male and female arc data and exclude wsx and england (as they wont have a population weighted deprivation score)
-
-var svg_scatter = d3
-  .select("#dep_le_scatter_vis")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height)
-  .append("g")
-  .attr("transform", "translate(" + 60 + "," + 30 + ")");
-
-var tooltip_scatter_dep_le = d3
-  .select("#dep_le_scatter_vis")
-  .append("div")
-  .style("opacity", 0)
-  .attr("class", "tooltip_class")
-  .style("position", "absolute")
-  .style("z-index", "10");
-
-var showTooltip_scatter_dep_le = function (d) {
-  tooltip_scatter_dep_le
-    .html(
-      "<p><b>" +
-        d.Sex +
-        "</b> life expectancy in " +
-        d.msoa11hclnm +
-        ", in  " +
-        d.Laname +
-        ": <b>" +
-        d3.format(",.1f")(
-          d.Value) +
-        " years</b></p>"
-    )
-    .style("opacity", 1)
-    .style("font-size", ".8rem")
-    .style("top", event.pageY - 0 + "px")
-    .style("left", event.pageX + 20 + "px")
-    .style("visibility", "visible");
-
-  selected_MSOA_scatter = d.Laname_ns;
-  selected_LA_scatter = d.Laname;
-
-  d3.selectAll(".dot." + selected_MSOA_scatter)
-    .transition()
-    .duration(200)
-    .style("stroke", "maroon")
-    .attr("r", 9);
-
-  svg_scatter
-    .append("text")
-    .attr("text-anchor", "middle")
-    .attr("class", "scatter_chart_text")
-    .attr("y", 60)
-    .attr("x", width * 0.5)
-    .attr("opacity", 0)
-    .transition()
-    .duration(1000)
-    .attr("opacity", 1)
-    // .style("font-weight", "bold")
-    .text('All areas in ' + selected_LA_scatter + ' highlighted');
-
-};
-
-var Mouseleave_scatter_dep_le = function (d) {
-  tooltip_scatter_dep_le.style("opacity", 0).style("visibility", "hidden");
-
-  d3.selectAll(".dot." + selected_MSOA_scatter)
-    .transition()
-    .duration(200)
-    .style('stroke', '#ffffff')
-    // .style("fill", function (d) { return sex_colour_function(d.Sex)})
-    .attr("r", 6);
-
-    svg_scatter.selectAll(".scatter_chart_text")
-    .transition()
-    .duration(1000)
-    .attr("opacity", 0)
-    .remove();
-
-};
-
-// Add X axis
-var x_dep_le = d3
-  .scaleLinear()
-  .domain([
-    0,
-    d3.max(dep_data, function (d) {
-      return +d.Pop_weighted_imd_score;
-    }),
-  ])
-  .range([0, width - 120])
-  .nice();
-
-xAxis_dep_le = svg_scatter
-  .append("g")
-  .attr("transform", "translate(0," + (height - 60) + ")") 
-  .call(d3.axisBottom(x_dep_le).tickFormat(d3.format(",.0f")));
-
-xAxis_dep_le.selectAll("text").style("font-size", ".8rem");
-
-// Add Y axis
-var y_dep_le = d3
-  .scaleLinear()
-  .domain([65, 95])
-  .range([height - 60, 0])
-  .nice()
-
-var yAxis_dep_le = svg_scatter
-  .append("g")
-  .attr("transform", "translate(0,0)")
-  .call(d3.axisLeft(y_dep_le).tickFormat(d3.format(",.0f")));
-
-yAxis_dep_le
-  .selectAll("text")
-  .attr("transform", "translate(0,0)")
-  .style("text-anchor", "end")
-  .style("font-size", ".8rem");
-
-svg_scatter
-  .append("text")
-  .attr("x", function (d) {
-    return x_dep_le(2);
-  })
-  .attr("y", height - 90)
-  .attr("id", "less_deprived_label")
-  .text("Less deprived")
-  .attr("text-anchor", "start")
-  .style("font-weight", "bold")
-  .style("font-size", ".8rem");
-
-svg_scatter
-  .append("text")
-  .attr("x", function (d) {
-    return x_dep_le(
-      d3.max(dep_data, function (d) {
-        return +d.Pop_weighted_imd_score;
-      })
-    );
-  })
-  .attr("y", height - 90)
-  .attr("id", "more_deprived_label")
-  .text("More deprived")
-  .attr("text-anchor", "end")
-  .style("font-weight", "bold")
-  .style("font-size", ".8rem");
-
-svg_scatter
-  .append("text")
-  .attr("x", function (d) {
-    return x_dep_le(
-      d3.max(dep_data, function (d) {
-        return +d.Pop_weighted_imd_score;
-      })
-    );
-  })
-  .attr("y", 10)
-  .attr("id", "hover_label_1")
-  .text("Hover over a dot")
-  .attr("text-anchor", "end")
-  .style("font-size", ".8rem");
-
-svg_scatter
-  .append("text")
-  .attr("x", function (d) {
-    return x_dep_le(
-      d3.max(dep_data, function (d) {
-        return +d.Pop_weighted_imd_score;
-      })
-    );
-  })
-  .attr("y", 25)
-  .attr("id", "hover_label_2")
-  .text("to highlight other")
-  .attr("text-anchor", "end")
-  .style("font-size", ".8rem");
-
-svg_scatter
-  .append("text")
-  .attr("x", function (d) {
-    return x_dep_le(
-      d3.max(dep_data, function (d) {
-        return +d.Pop_weighted_imd_score;
-      })
-    );
-  })
-  .attr("y", 40)
-  .attr("id", "hover_label_3")
-  .text("neighbhourhoods in")
-  .attr("text-anchor", "end")
-  .style("font-size", ".8rem");
-
-svg_scatter
-  .append("text")
-  .attr("x", function (d) {
-    return x_dep_le(
-      d3.max(dep_data, function (d) {
-        return +d.Pop_weighted_imd_score;
-      })
-    );
-  })
-  .attr("y", 55)
-  .attr("id", "hover_label_4")
-  .text("the same local authority")
-  .attr("text-anchor", "end")
-  .style("font-size", ".8rem");
-
-svg_scatter
-  .append("text")
-  .attr("text-anchor", "end")
-  .attr('transform', 'rotate(-90)')
-  .attr("y", 20)
-  .attr("x", -30)
-  .attr("opacity", 1)
-  .style("font-weight", "bold")
-  .text("years")
-
-  svg_scatter
-  .append("text")
-  .attr("text-anchor", "end")
-  // .attr('transform', 'rotate(-90)')
-  .attr("y", height - 70)
-  .attr("x", function (d) {
-    return x_dep_le(
-      d3.max(dep_data, function (d) {
-        return +d.Pop_weighted_imd_score;
-      })
-    );
-  })
-  .attr("opacity", 1)
-  .style("font-size", ".8rem")
-  .style("font-weight", "bold")
-  .text("Population weighted deprivation score (area based)")
-
-sex_colour_function = d3
-.scaleOrdinal()
-.domain(['Male', 'Female'])
-.range(['#ff9169', '#94e2ff'])
-
-var dep_uptake_points = svg_scatter
-    .selectAll("circle")
-    .data(dep_data);
-
-  dep_uptake_points
-    .enter()
-    .append("circle")
-    .merge(dep_uptake_points)
-    .attr("class", function (d) {
-      return "dot " + d.Laname_ns;
-    })
-    .attr("cx", function (d) {
-      return x_dep_le(d.Pop_weighted_imd_score);
-    })
-    .attr("cy", function (d) {
-      return y_dep_le(
-        d.Value)})
-    .attr("r", 6)
-    .attr("fill", function (d) { return sex_colour_function(d.Sex)})
-    .style("stroke", "#ffffff")
-    .on("mousemove", showTooltip_scatter_dep_le)
-    .on("mouseout", Mouseleave_scatter_dep_le);
-
-  dep_uptake_points.exit().remove();
-
-}) // This is the end of the whe
-
 // ! Map
 
 // TODO Three layers - male / female / gap 
-
 
 function getLEColor(d) {
   return d > 90   ? '#9f00fa' :
@@ -691,11 +421,11 @@ function getLE_gap_Color(d) {
         
 
 // L. is leaflet
-var tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-var tileUrl_bw = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+var tileUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
+var tileUrl_bw = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}.png";
 
 var attribution =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Contains Ordnance Survey data © Crown copyright and database right 2022';
+  'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ';
 
 // Add AJAX request for data
 var msoa_le = $.ajax({
@@ -713,7 +443,7 @@ function male_leColour(feature) {
    // color:  getLEColor(feature.properties.Life_expectancy_at_birth_male),
     color: '#e5e5e5',
     weight: 1,
-    fillOpacity: 1,
+    fillOpacity: .8,
   };
 }
 function female_leColour(feature) {
@@ -722,7 +452,7 @@ function female_leColour(feature) {
    // color:  getLEColor(feature.properties.Life_expectancy_at_birth_male),
     color: '#e5e5e5',
     weight: 1,
-    fillOpacity: 1,
+    fillOpacity: .8,
   };
 }
 
@@ -732,7 +462,7 @@ function le_gap_Colour(feature) {
    // color:  getLEColor(feature.properties.Life_expectancy_at_birth_male),
     color: '#e5e5e5',
     weight: 1,
-    fillOpacity: 1,
+    fillOpacity: .8,
   };
 }
 
@@ -747,7 +477,7 @@ $.when(msoa_le).done(function () {
     .bindPopup(function (layer) {
       return (
         "<Strong>" +
-        layer.feature.properties.Msoa_name +
+        layer.feature.properties.msoa21hclnm +
         "</Strong><br><br>Male life expectancy: <b>" +
         d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_male) +
         ' years</b><br>Female life expectancy: <b>' +
@@ -762,7 +492,7 @@ $.when(msoa_le).done(function () {
     .bindPopup(function (layer) {
       return (
         "<Strong>" +
-        layer.feature.properties.Msoa_name +
+        layer.feature.properties.msoa21hclnm +
         "</Strong><br><br>Male life expectancy: <b>" +
         d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_male) +
         ' years</b><br>Female life expectancy: <b>' +
@@ -777,7 +507,7 @@ $.when(msoa_le).done(function () {
     .bindPopup(function (layer) {
       return (
         "<Strong>" +
-        layer.feature.properties.Msoa_name +
+        layer.feature.properties.msoa21hclnm +
         "</Strong><br><br>Male life expectancy: <b>" +
         d3.format(',.1f')(layer.feature.properties.Life_expectancy_at_birth_male) +
         ' years</b><br>Female life expectancy: <b>' +
@@ -837,3 +567,270 @@ var baseMaps_map_4 = {
 
   map.fitBounds(msoa_male_le_boundary.getBounds());
 });
+
+// ! Deprivation scatter plot
+
+var dep_data = male_arc_data.responseJSON.links.concat(female_arc_data.responseJSON.links).filter(function(d){
+  return d.Area_Name != 'West Sussex' && d.Area_Name != 'England'}) // Join male and female arc data and exclude wsx and england (as they wont have a population weighted deprivation score)
+
+var svg_scatter = d3
+  .select("#dep_le_scatter_vis")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .append("g")
+  .attr("transform", "translate(" + 60 + "," + 30 + ")");
+
+var tooltip_scatter_dep_le = d3
+  .select("#dep_le_scatter_vis")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip_class")
+  .style("position", "absolute")
+  .style("z-index", "10");
+
+var showTooltip_scatter_dep_le = function (d) {
+  tooltip_scatter_dep_le
+    .html(
+      "<p><b>" +
+        d.Sex +
+        "</b> life expectancy in " +
+        d.msoa21hclnm +
+        ", in  " +
+        d.localauthorityname +
+        ": <b>" +
+        d3.format(",.1f")(
+          d.Value) +
+        " years</b></p>"
+    )
+    .style("opacity", 1)
+    .style("font-size", ".8rem")
+    .style("top", event.pageY - 0 + "px")
+    .style("left", event.pageX + 20 + "px")
+    .style("visibility", "visible");
+
+  selected_MSOA_scatter = d.localauthorityname_ns;
+  selected_LA_scatter = d.localauthorityname;
+
+  d3.selectAll(".dot." + selected_MSOA_scatter)
+    .transition()
+    .duration(200)
+    .style("stroke", "maroon")
+    .attr("r", 9);
+
+  svg_scatter
+    .append("text")
+    .attr("text-anchor", "middle")
+    .attr("class", "scatter_chart_text")
+    .attr("y", 60)
+    .attr("x", width * 0.5)
+    .attr("opacity", 0)
+    .transition()
+    .duration(1000)
+    .attr("opacity", 1)
+    // .style("font-weight", "bold")
+    .text('All areas in ' + selected_LA_scatter + ' highlighted');
+
+};
+
+var Mouseleave_scatter_dep_le = function (d) {
+  tooltip_scatter_dep_le.style("opacity", 0).style("visibility", "hidden");
+
+  d3.selectAll(".dot." + selected_MSOA_scatter)
+    .transition()
+    .duration(200)
+    .style('stroke', '#ffffff')
+    // .style("fill", function (d) { return sex_colour_function(d.Sex)})
+    .attr("r", 6);
+
+    svg_scatter.selectAll(".scatter_chart_text")
+    .transition()
+    .duration(1000)
+    .attr("opacity", 0)
+    .remove();
+
+};
+
+// Add X axis
+var x_dep_le = d3
+  .scaleLinear()
+  .domain([
+    0,
+    d3.max(dep_data, function (d) {
+      return +d.Average_score;
+    }),
+  ])
+  .range([0, width - 120])
+  .nice();
+
+xAxis_dep_le = svg_scatter
+  .append("g")
+  .attr("transform", "translate(0," + (height - 60) + ")") 
+  .call(d3.axisBottom(x_dep_le).tickFormat(d3.format(",.0f")));
+
+xAxis_dep_le.selectAll("text").style("font-size", ".8rem");
+
+// Add Y axis
+var y_dep_le = d3
+  .scaleLinear()
+  .domain([65, 95])
+  .range([height - 60, 0])
+  .nice()
+
+var yAxis_dep_le = svg_scatter
+  .append("g")
+  .attr("transform", "translate(0,0)")
+  .call(d3.axisLeft(y_dep_le).tickFormat(d3.format(",.0f")));
+
+yAxis_dep_le
+  .selectAll("text")
+  .attr("transform", "translate(0,0)")
+  .style("text-anchor", "end")
+  .style("font-size", ".8rem");
+
+svg_scatter
+  .append("text")
+  .attr("x", function (d) {
+    return x_dep_le(2);
+  })
+  .attr("y", height - 90)
+  .attr("id", "less_deprived_label")
+  .text("Less deprived")
+  .attr("text-anchor", "start")
+  .style("font-weight", "bold")
+  .style("font-size", ".8rem");
+
+svg_scatter
+  .append("text")
+  .attr("x", function (d) {
+    return x_dep_le(
+      d3.max(dep_data, function (d) {
+        return +d.Average_score;
+      })
+    );
+  })
+  .attr("y", height - 90)
+  .attr("id", "more_deprived_label")
+  .text("More deprived")
+  .attr("text-anchor", "end")
+  .style("font-weight", "bold")
+  .style("font-size", ".8rem");
+
+svg_scatter
+  .append("text")
+  .attr("x", function (d) {
+    return x_dep_le(
+      d3.max(dep_data, function (d) {
+        return +d.Average_score;
+      })
+    );
+  })
+  .attr("y", 10)
+  .attr("id", "hover_label_1")
+  .text("Hover over a dot")
+  .attr("text-anchor", "end")
+  .style("font-size", ".8rem");
+
+svg_scatter
+  .append("text")
+  .attr("x", function (d) {
+    return x_dep_le(
+      d3.max(dep_data, function (d) {
+        return +d.Average_score;
+      })
+    );
+  })
+  .attr("y", 25)
+  .attr("id", "hover_label_2")
+  .text("to highlight other")
+  .attr("text-anchor", "end")
+  .style("font-size", ".8rem");
+
+svg_scatter
+  .append("text")
+  .attr("x", function (d) {
+    return x_dep_le(
+      d3.max(dep_data, function (d) {
+        return +d.Average_score;
+      })
+    );
+  })
+  .attr("y", 40)
+  .attr("id", "hover_label_3")
+  .text("neighbhourhoods in")
+  .attr("text-anchor", "end")
+  .style("font-size", ".8rem");
+
+svg_scatter
+  .append("text")
+  .attr("x", function (d) {
+    return x_dep_le(
+      d3.max(dep_data, function (d) {
+        return +d.Average_score;
+      })
+    );
+  })
+  .attr("y", 55)
+  .attr("id", "hover_label_4")
+  .text("the same local authority")
+  .attr("text-anchor", "end")
+  .style("font-size", ".8rem");
+
+svg_scatter
+  .append("text")
+  .attr("text-anchor", "end")
+  .attr('transform', 'rotate(-90)')
+  .attr("y", 20)
+  .attr("x", -30)
+  .attr("opacity", 1)
+  .style("font-weight", "bold")
+  .text("years")
+
+  svg_scatter
+  .append("text")
+  .attr("text-anchor", "end")
+  // .attr('transform', 'rotate(-90)')
+  .attr("y", height - 70)
+  .attr("x", function (d) {
+    return x_dep_le(
+      d3.max(dep_data, function (d) {
+        return +d.Average_score;
+      })
+    );
+  })
+  .attr("opacity", 1)
+  .style("font-size", ".8rem")
+  .style("font-weight", "bold")
+  .text("Population weighted deprivation score (area based)")
+
+sex_colour_function = d3
+.scaleOrdinal()
+.domain(['Male', 'Female'])
+.range(['#ff9169', '#94e2ff'])
+
+var dep_uptake_points = svg_scatter
+    .selectAll("circle")
+    .data(dep_data);
+
+  dep_uptake_points
+    .enter()
+    .append("circle")
+    .merge(dep_uptake_points)
+    .attr("class", function (d) {
+      return "dot " + d.localauthorityname_ns;
+    })
+    .attr("cx", function (d) {
+      return x_dep_le(d.Average_score);
+    })
+    .attr("cy", function (d) {
+      return y_dep_le(
+        d.Value)})
+    .attr("r", 6)
+    .attr("fill", function (d) { return sex_colour_function(d.Sex)})
+    .style("stroke", "#ffffff")
+    .on("mousemove", showTooltip_scatter_dep_le)
+    .on("mouseout", Mouseleave_scatter_dep_le);
+
+  dep_uptake_points.exit().remove();
+
+}) // This is the end of the scatter plot.

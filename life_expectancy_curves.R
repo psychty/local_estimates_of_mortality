@@ -1,9 +1,13 @@
-library(easypackages)
 
 # libraries(c("readxl", "readr", "plyr", "dplyr", "ggplot2", "png", "tidyverse", "reshape2", "scales", 'stringr'))
-libraries(c("readxl", "readr", "png", "scales", "tidyverse", 'ggtext', 'd3r', 'igraph'))
+packages <- c('easypackages',"readxl", "readr", "png", "scales", "tidyverse", 'ggtext', 'd3r', 'igraph')
+install.packages(setdiff(packages, rownames(installed.packages())))
 
-github_repo <- paste0('~/Github/local_estimates_of_mortality/')
+easypackages::libraries(packages)
+
+github_repo <- paste0('./local_estimates_of_mortality/')
+
+list.files(github_repo)
 
 arc_theme = function(){
   theme(
@@ -24,9 +28,9 @@ arc_theme = function(){
   )
 }
 
-msoa_names <- read_csv('https://houseofcommonslibrary.github.io/msoanames/MSOA-Names-Latest.csv') %>%
-  select(msoa11cd, msoa11hclnm, Laname) %>%
-  rename(Area_Code = msoa11cd)
+msoa_names <- read_csv('https://houseofcommonslibrary.github.io/msoanames/MSOA-Names-Latest2.csv') %>%
+  select(msoa21cd, msoa21hclnm, localauthorityname, type) %>%
+  rename(Area_Code = msoa21cd)
 
 # Local Health data from fingertips
 local_health_metadata <- read_csv('https://fingertips.phe.org.uk/api/indicator_metadata/csv/by_profile_id?profile_id=143') %>%
@@ -47,47 +51,33 @@ msoa_local_health_data <- read_csv('https://fingertips.phe.org.uk/api/all_data/c
          Upper_CI = 'Upper CI 95.0 limit',
          Numerator = 'Count',
          Compared_to_eng = 'Compared to England value or percentiles',
-         Compared_to_wsx = 'Compared to Counties & UAs (from Apr 2021) value or percentiles',
+         Compared_to_wsx = 'Compared to Counties & UAs (2021/22-2022/23) value or percentiles',
          Note = 'Value note') %>% 
-  mutate(Indicator = trimws(paste(ifelse(Indicator_Name == 'Life expectancy at birth, (upper age band 90+)', Sex, ''), Indicator_Name, Age, Period, sep = ' '), which = 'left')) %>% 
+ mutate(Indicator = trimws(paste(
+    case_when(Indicator_Name == 'Life expectancy at birth' ~ Sex,
+              TRUE ~ ''), 
+    Indicator_Name, Age, Period, sep = ' '), which = 'left')) %>% 
   select(ID, Indicator, Area_Code, Area_Name, Value, Lower_CI, Upper_CI, Numerator, Denominator, Note, Compared_to_wsx, Compared_to_eng, Sex)
 
 LE_data <- msoa_local_health_data %>% 
   filter(ID == '93283') %>% 
   left_join(msoa_names, by = 'Area_Code') %>%
-  select(ID, Area_Code, Area_Name, msoa11hclnm, Laname, Sex, Value) %>% 
-  mutate(Area_type_label = factor(ifelse(Area_Name == 'West Sussex', 'West Sussex', ifelse(Area_Name == 'England', 'England', 'West Sussex Neighbourhoods')), levels = c('West Sussex Neighbourhoods', 'West Sussex', 'England'))) %>% 
-  mutate(msoa11hclnm = ifelse(Area_Name == 'West Sussex', 'West Sussex', ifelse(Area_Name == 'England', 'England', msoa11hclnm))) %>% 
+  select(ID, Indicator, Area_Code, Area_Name, msoa21hclnm, localauthorityname, Sex, Value) %>% 
+  mutate(Area_type_label = factor(
+    case_when(Area_Name == 'West Sussex' ~ 'West Sussex', 
+              Area_Name == 'England' ~ 'England',
+              TRUE ~ 'West Sussex Neighbourhoods'), 
+    levels = c('West Sussex Neighbourhoods', 'West Sussex', 'England'))) %>% 
+  mutate(msoa21hclnm = case_when(Area_Name == 'West Sussex' ~ 'West Sussex',
+                                 Area_Name == 'England' ~ 'England',
+                                 TRUE ~ msoa21hclnm)) %>% 
   arrange(Area_type_label) %>% 
-  mutate(Laname_ns = gsub(' ','_', Laname))
-
-#  Add msoa deprivation data so that we can use one data source for the scatter
-lookup <- read_csv('https://opendata.arcgis.com/datasets/65664b00231444edb3f6f83c9d40591f_0.csv') %>% 
-  select(LSOA11CD, MSOA11CD, MSOA11NM) %>% 
-  unique()
-
-IMD_2019 <- read_csv('https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/845345/File_7_-_All_IoD2019_Scores__Ranks__Deciles_and_Population_Denominators_3.csv') %>% 
-  select("LSOA code (2011)",  "Local Authority District name (2019)", "Index of Multiple Deprivation (IMD) Score",  "Total population: mid 2015 (excluding prisoners)" ) %>% 
-  rename(LSOA11CD = 'LSOA code (2011)',
-         LTLA = 'Local Authority District name (2019)',
-         IMD_2019_score = 'Index of Multiple Deprivation (IMD) Score',
-         Population = 'Total population: mid 2015 (excluding prisoners)') %>%
-  mutate(Pop_weighted_score = IMD_2019_score * Population) %>% 
-  left_join(lookup, by = 'LSOA11CD') %>% 
-  group_by(MSOA11CD) %>% 
-  summarise(Pop_weighted_imd_score = sum(Pop_weighted_score),
-            Population = sum(Population)) %>% 
-  mutate(Pop_weighted_imd_score = Pop_weighted_imd_score / Population) %>% 
-  arrange(desc(Pop_weighted_imd_score)) %>% 
-  mutate(Pop_weighted_rank = rank(desc(Pop_weighted_imd_score))) %>% 
-  left_join(read_csv('https://houseofcommonslibrary.github.io/msoanames/MSOA-Names-Latest.csv')[c('msoa11cd', 'msoa11hclnm')], by = c('MSOA11CD' = 'msoa11cd')) %>% 
-  select(MSOA11CD, msoa11hclnm, Population, Pop_weighted_imd_score, Pop_weighted_rank) %>% 
-  mutate(Pop_weighted_decile = abs(ntile(Pop_weighted_imd_score, 10) - 11)) 
-
-LE_data <- LE_data %>% 
-  left_join(IMD_2019[c('MSOA11CD', 'Pop_weighted_imd_score', 'Pop_weighted_rank')], by = c('Area_Code' = 'MSOA11CD'))
+  mutate(Laname_ns = gsub(' ','_', localauthorityname)) %>% 
+  left_join(read_csv(paste0(github_repo, 'IMD2025_pop_weighted_MSOA_scores.csv')),
+            by = c('Area_Code' = 'MSOA21CD'))
 
 wsx_LE <- LE_data %>% 
+  select(!Indicator) |> 
   filter(Area_Name == 'West Sussex') %>% 
   pivot_wider(names_from = 'Sex',
               values_from = 'Value')
@@ -110,15 +100,18 @@ highest_msoa_females <- LE_data %>%
   filter(Sex == 'Female') %>% 
   filter(Value == max(Value, na.rm = TRUE))
 
-WSX_male_LE_data_text <- paste0('The gap in male life expectancy<br>between the highest neighbourhood (', highest_msoa_males$msoa11hclnm, ', ', round(highest_msoa_males$Value, 1), ' years) and the lowest (', lowest_msoa_males$msoa11hclnm, ', ', round(lowest_msoa_males$Value,1), ' years) in West Sussex is <b>', round(highest_msoa_males$Value - lowest_msoa_males$Value, 1), ' years</b>.')
+WSX_male_LE_data_text <- paste0('The gap in male life expectancy<br>between the highest neighbourhood (', highest_msoa_males$msoa21hclnm, ', ', round(highest_msoa_males$Value, 1), ' years) and the lowest (', lowest_msoa_males$msoa21hclnm, ', ', round(lowest_msoa_males$Value,1), ' years) in West Sussex is <b>', round(highest_msoa_males$Value - lowest_msoa_males$Value, 1), ' years</b>.')
 
 wsx_eng_text <- paste0('Compared to England overall, life expectancy is around <b>one year higher in West Sussex</b>, for both males and females. However, there is a lot of variation in life expectancy across smaller areas in the county.')
 
-WSX_female_LE_data_text <- paste0('Females born in the highest life expectancy neighbourhood (', highest_msoa_females$msoa11hclnm, ', ', round(highest_msoa_females$Value, 1), ' years), can expect to live, on average, <b>', round(highest_msoa_females$Value - lowest_msoa_females$Value, 1), ' years longer</b> than females born in the lowest life expectancy neighbourhood (', lowest_msoa_females$msoa11hclnm, ', ',  round(lowest_msoa_females$Value, 1), ' years).')
+LE_data %>% 
+  filter(Area_Name %in% c('England', 'West Sussex'))
+
+WSX_female_LE_data_text <- paste0('Females born in the highest life expectancy neighbourhood (', highest_msoa_females$msoa21hclnm, ', ', round(highest_msoa_females$Value, 1), ' years), can expect to live, on average, <b>', round(highest_msoa_females$Value - lowest_msoa_females$Value, 1), ' years longer</b> than females born in the lowest life expectancy neighbourhood (', lowest_msoa_females$msoa21hclnm, ', ',  round(lowest_msoa_females$Value, 1), ' years).')
 
 LE_labels <- data.frame(ID = c(1,2,3,4,5, 6), Label = c(paste0('West Sussex <b>male</b><br>Life expectancy<br>at birth: <b>', round(wsx_LE$Male, 1), ' years</b>'), paste0('West Sussex <b>female</b><br>Life expectancy<br>at birth: <b>', round(wsx_LE$Female, 1), ' years</b>'), Wsx_le_text, wsx_eng_text, WSX_male_LE_data_text, WSX_female_LE_data_text), Y_position = c(1.2,-1.2, .4, -.4, .8, -1), X_position = c(0, 0, 20, 20, 80, 80))
 
-LE_arc <- ggplot(LE_data) +
+ggplot(LE_data) +
   geom_curve(data = subset(LE_data, Sex == 'Male'),
              aes(x = 0, 
                  y = 0.1, 
@@ -196,17 +189,17 @@ LE_arc <- ggplot(LE_data) +
                     name = '') +
   scale_size_manual(values = c(2, 4, 2),
                     name = '') +
-    labs(title = 'Life expectancy at birth; five year pooled data (2015-2019); West Sussex neighbourhoods (Middle-layer Super Output Areas); by sex',
+    labs(title = 'Life expectancy at birth; five year pooled data (2019-2023); West Sussex neighbourhoods (Middle-layer Super Output Areas); by sex',
        subtitle = 'Data source: Public Health England analysis of ONS death registration data and mid-year population estimates.',
-       caption = 'Life expectancy is an estimate of the average number of years a new-born baby would survive if he or she experienced the age-specific mortality rates\nfor that area and time period throughout his or her life.\nEach line represents a neighbourhood area within West Sussex with male life expectancy along the top and female life expectancy at the bottom.\nNote that the time period included in this metric is prior to the COVID-19 pandemic.') +
+       caption = 'Life expectancy is an estimate of the average number of years a new-born baby would survive if he or she experienced the age-specific mortality rates\nfor that area and time period throughout his or her life.\nEach line represents a neighbourhood area within West Sussex with male life expectancy along the top and female life expectancy at the bottom.\nNote that the time period included in this metric includes the COVID-19 pandemic.') +
   arc_theme()
 
-png(paste0(github_repo, '/Outputs/Figure_1_West_Sussex_MSOA_LE_Arc.png'),
-    width = 1580,
-    height = 950,
-    res = 120)
-print(LE_arc)
-dev.off()
+ggsave(filename = paste0(github_repo, '/Outputs/Figure_1_West_Sussex_MSOA_LE_Arc.png'),
+       plot = last_plot(),
+       width = 28,
+       height = 19,
+       dpi = 220,
+       unit = 'cm')
 
 # For d3 plotting ####
 links <- LE_data %>% 
@@ -244,7 +237,30 @@ data_json %>%
   write_lines(paste0(github_repo,'/Outputs/female_le_arc_data.json'))
 
 LE_data %>% 
-  ggplot(aes(x = Pop_weighted_imd_score,
+  ggplot(aes(x = Average_score,
              y = Value,
              color = Sex)) +
   geom_point()
+
+# TODO
+
+msoa_sf <- read_sf('https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_layer_Super_Output_Areas_December_2021_Boundaries_EW_BSC_V3/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson') %>% 
+  left_join(msoa_names, by = c('MSOA21CD' = 'Area_Code')) %>% 
+  filter(localauthorityname %in% c('Adur', 'Arun', 'Chichester', 'Crawley', 'Horsham', 'Mid Sussex', 'Worthing'))
+
+#
+
+msoa_local_health_data %>% 
+  filter(Indicator %in% c("Male Life expectancy at birth All ages 2019 - 23", "Female Life expectancy at birth All ages 2019 - 23", "Healthy life expectancy at birth 2021 Census based All ages 2019 - 23")) 
+
+# Export a geojson msoa file with the point value fields for  
+
+# It needs to have as a minimum   
+#select(Code, Label, Msoa_name, Laname, Life_expectancy_at_birth_female, Life_expectancy_at_birth_male, Healthy_life_expectancy_persons, Life_expectancy_at_birth_female_significance, Life_expectancy_at_birth_male_significane, Healthy_life_expectancy_persons, 
+
+# Bonus - if we could also bring in LTLA UTLA and national data for this we could include the below or above and also sig diff for each msoa.
+
+# It needs to be called this...
+geojson_write(ms_simplify(geojson_json(msoa_sf), keep = 1), 
+              file = paste0(github_repo, 'msoa_local_health_latest.geojson')) 
+

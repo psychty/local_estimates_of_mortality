@@ -1,0 +1,101 @@
+MSOA21CD,MSOA21NM,MSOA21HCL_NAME,Average_score,Average_score_rank,Average_score_decile,Average_score_quintile,Q1_neighbourhoods,Q1_population,Q1_proportion
+E02006534,Adur 001,Hillside,12.963716294277928,4753,Decile 7,Quintile 4,0,0,0
+E02006535,Adur 002,Buckingham,5.600866684879115,6551,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006536,Adur 003,North Lancing,10.845154523618895,5364,Decile 8,Quintile 4,0,0,0
+E02006537,Adur 004,Kingston & Southwick,22.536497151538168,2638,Decile 4,Quintile 2,0,0,0
+E02006538,Adur 005,Shoreham Central & Beach,9.798875942278698,5630,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006539,Adur 006,Cokeham & Sompting,18.739476333789327,3343,Decile 5,Quintile 3,0,0,0
+E02006540,Adur 007,Marsh Barn & Widewater,22.253979285344382,2681,Decile 4,Quintile 2,0,0,0
+E02006541,Adur 008,South Lancing,17.243568338878937,3650,Decile 6,Quintile 3,0,0,0
+E02006542,Arun 001,Arundel,16.09719884271436,3923,Decile 6,Quintile 3,0,0,0
+E02006543,Arun 002,"Angmering North, Patching & Findon",17.43917483631216,3614,Decile 6,Quintile 3,0,0,0
+E02006544,Arun 003,"Westergate, Eastergate & Walberton",14.999070021699215,4210,Decile 7,Quintile 4,0,0,0
+E02006545,Arun 004,Wick & Toddington,28.367999274836837,1762,Decile 3,Quintile 2,2,3296,0.2655708645556361
+E02006546,Arun 005,Angmering South,14.770891506453651,4262,Decile 7,Quintile 4,0,0,0
+E02006547,Arun 006,Yapton & Climping,20.605625325992467,2938,Decile 5,Quintile 3,0,0,0
+E02006548,Arun 007,Rustington North,15.3464875881091,4125,Decile 7,Quintile 4,0,0,0
+E02006549,Arun 008,Ferring & Kingston Gorse,8.301510883482715,6025,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006550,Arun 009,Littlehampton East,18.258188018046372,3439,Decile 6,Quintile 3,0,0,0
+E02006551,Arun 010,East Preston & Rustington East,10.252930745814307,5521,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006552,Arun 011,Littlehampton West and River,37.829539784946235,876,Decile 2,Quintile 1 (most deprived 20%),2,4294,0.5771505376344086
+E02006553,Arun 012,North Bersted,15.394003419147225,4108,Decile 6,Quintile 3,0,0,0
+E02006554,Arun 013,Middleton-on-Sea,15.482678824415975,4085,Decile 6,Quintile 3,0,0,0
+E02006555,Arun 014,South Bersted,28.869051937984494,1705,Decile 3,Quintile 2,1,1232,0.1591731266149871
+E02006556,Arun 015,Felpham,12.993066233888419,4741,Decile 7,Quintile 4,0,0,0
+E02006557,Arun 016,Hawthorn Road,30.15141979522184,1533,Decile 3,Quintile 2,2,3220,0.4070281885981545
+E02006558,Arun 017,Bognor Regis Central,34.8871665751921,1090,Decile 2,Quintile 1 (most deprived 20%),2,4082,0.3733991950237834
+E02006559,Arun 018,Aldwick,8.666300024254184,5930,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006560,Arun 019,Nyetimber & Pagham,15.972406211435622,3951,Decile 6,Quintile 3,0,0,0
+E02006561,Chichester 001,Fernhurst & Northchapel,12.045156117526677,5014,Decile 8,Quintile 4,0,0,0
+E02006562,Chichester 002,Ifold & Wisborough Green,13.752551896690882,4527,Decile 7,Quintile 4,0,0,0
+E02006563,Chichester 003,Milland & South Harting,17.32496125237848,3638,Decile 6,Quintile 3,0,0,0
+E02006564,Chichester 004,Midhurst & Cocking,12.965368791697555,4752,Decile 7,Quintile 4,0,0,0
+E02006565,Chichester 005,Easebourne & Petworth,16.934563100813406,3719,Decile 6,Quintile 3,0,0,0
+E02006566,Chichester 006,"Dean, Lavant & Summersdale",13.734838713464022,4531,Decile 7,Quintile 4,0,0,0
+E02006567,Chichester 007,Westbourne & Funtington,16.78063206444069,3758,Decile 6,Quintile 3,0,0,0
+E02006568,Chichester 008,College Lane & Oaklands,20.70365703229883,2924,Decile 5,Quintile 3,0,0,0
+E02006569,Chichester 009,"Southbourne, Bosham & Thorney",10.236917214191854,5524,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006570,Chichester 010,Central Chichester,15.229151745893615,4159,Decile 7,Quintile 4,0,0,0
+E02006571,Chichester 011,Stockbridge & Fishbourne,10.384146645512239,5490,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006572,Chichester 012,"Tangmere, Mundham & Hunston",19.87551448846836,3081,Decile 5,Quintile 3,0,0,0
+E02006573,Chichester 013,Wittering & Birdham,14.625310811962173,4307,Decile 7,Quintile 4,0,0,0
+E02006574,Chichester 014,Selsey,19.457072512023675,3166,Decile 5,Quintile 3,0,0,0
+E02006575,Crawley 001,Langley Green & Gatwick Airport,25.000713633398565,2213,Decile 4,Quintile 2,0,0,0
+E02006576,Crawley 002,Pound Hill,12.353651761156954,4926,Decile 8,Quintile 4,0,0,0
+E02006577,Crawley 003,Ewhurst & West Green,22.28831113525258,2670,Decile 4,Quintile 2,0,0,0
+E02006578,Crawley 004,Manor Royal & Northgate,22.81007282934707,2584,Decile 4,Quintile 2,0,0,0
+E02006579,Crawley 005,Three Bridges,16.261509579467404,3887,Decile 6,Quintile 3,0,0,0
+E02006580,Crawley 006,Ifield & Gossops Green,16.441952438145567,3837,Decile 6,Quintile 3,0,0,0
+E02006581,Crawley 007,Southgate,25.908938087635267,2094,Decile 4,Quintile 2,0,0,0
+E02006582,Crawley 008,Maidenbower East & Worth,7.2070317460317455,6284,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006583,Crawley 009,Maidenbower West & Furnace Green,15.243396776259608,4155,Decile 7,Quintile 4,0,0,0
+E02006584,Crawley 010,Bewbush,28.706448706160515,1727,Decile 3,Quintile 2,0,0,0
+E02006585,Crawley 011,Tilgate,21.009166425818883,2876,Decile 5,Quintile 3,0,0,0
+E02006586,Crawley 012,Broadfield West,25.940639881717665,2091,Decile 4,Quintile 2,0,0,0
+E02006587,Crawley 013,Broadfield East,31.433827251788095,1415,Decile 3,Quintile 2,1,1590,0.1927506364407807
+E02006588,Horsham 001,"Rusper, Faygate & Leechpool",11.640532817109145,5143,Decile 8,Quintile 4,0,0,0
+E02006589,Horsham 002,Littlehaven,3.9115006098623453,6755,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006590,Horsham 003,Broadbridge Heath & Warnham,9.527820999438518,5709,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006591,Horsham 004,Horsham East & Roffey,7.780649831649832,6160,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006592,Horsham 005,"Rudgwick, Slinfold & Barns Green",11.791938002980626,5095,Decile 8,Quintile 4,0,0,0
+E02006593,Horsham 006,Horsham Central,14.458802873313017,4351,Decile 7,Quintile 4,0,0,0
+E02006594,Horsham 007,Horsham West,6.630018670515018,6387,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006595,Horsham 008,"Horsham South, Mannings Heath & Nuthurst",6.426066798288911,6430,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006596,Horsham 009,Southwater,5.402076131245979,6582,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006597,Horsham 010,Billingshurst,10.420206387442692,5479,Decile 8,Quintile 4,0,0,0
+E02006598,Horsham 011,Cowfold & Partridge Green,12.997715571061331,4739,Decile 7,Quintile 4,0,0,0
+E02006599,Horsham 012,West Chiltington Common,6.011936427850656,6485,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006600,Horsham 013,"Amberley, Pulborough & Storrington",16.29005756048387,3880,Decile 6,Quintile 3,0,0,0
+E02006601,Horsham 014,Henfield & Small Dole,13.461807349665925,4602,Decile 7,Quintile 4,0,0,0
+E02006602,Horsham 015,Ashington & Washington,9.400759891782211,5737,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006603,Horsham 016,Steyning & Upper Beeding,8.134560656124616,6063,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006604,Mid Sussex 001,East Grinstead Central & North,12.182240356958477,4985,Decile 8,Quintile 4,0,0,0
+E02006605,Mid Sussex 002,Copthorne & Turners Hill,8.185995155314904,6054,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006606,Mid Sussex 003,East Grinstead East,5.792343314093314,6520,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006607,Mid Sussex 004,East Grinstead West & South,4.356694098605578,6712,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006608,Mid Sussex 005,Crawley Down,8.012416679779701,6105,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006609,Mid Sussex 006,"Horsted Keynes, Ardingly & Sharpthorne",12.232450657419447,4966,Decile 8,Quintile 4,0,0,0
+E02006610,Mid Sussex 007,Balcombe & Handcross,12.183886696450731,4984,Decile 8,Quintile 4,0,0,0
+E02006611,Mid Sussex 008,Haywards Heath North East,3.8713663564408103,6758,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006612,Mid Sussex 009,Haywards Heath West,6.385102741438214,6437,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006613,Mid Sussex 010,Haywards Heath East,13.670741530902509,4550,Decile 7,Quintile 4,0,0,0
+E02006614,Mid Sussex 011,Haywards Heath South & Cuckfield,8.710773019595974,5918,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006615,Mid Sussex 012,Burgess Hill West,6.419433805980626,6431,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006616,Mid Sussex 013,Burgess Hill East,9.15516900288299,5802,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006617,Mid Sussex 014,Burgess Hill Central,15.025141787806467,4203,Decile 7,Quintile 4,0,0,0
+E02006618,Mid Sussex 015,Burgess Hill South,1.8294871046975745,6854,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006619,Mid Sussex 016,Hurstpierpoint & Bolney,12.994299304196565,4740,Decile 7,Quintile 4,0,0,0
+E02006620,Mid Sussex 017,"Hassocks, Keymer & East Hurstpierpoint",5.187068302257115,6612,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006621,Worthing 001,High Salvington & Findon Valley,6.450755373192654,6427,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006622,Worthing 002,Salvington,13.795007714683193,4516,Decile 7,Quintile 4,0,0,0
+E02006623,Worthing 003,Durrington North,22.153204500494564,2695,Decile 4,Quintile 2,0,0,0
+E02006624,Worthing 004,Broadwater West,4.603233270116499,6689,Decile 10 (least deprived 10%),Quintile 5 (least deprived 20%),0,0,0
+E02006625,Worthing 005,Broadwater East,11.227708265802269,5255,Decile 8,Quintile 4,0,0,0
+E02006626,Worthing 006,Northbrook,24.440830245126424,2318,Decile 4,Quintile 2,1,1617,0.15605095541401273
+E02006627,Worthing 007,Durrington South,13.27210370523701,4659,Decile 7,Quintile 4,0,0,0
+E02006628,Worthing 008,Broadwater South,18.33476333592104,3424,Decile 5,Quintile 3,0,0,0
+E02006629,Worthing 009,East Worthing,21.47017303953338,2794,Decile 5,Quintile 3,1,1316,0.17057679844458845
+E02006630,Worthing 010,Heene,22.82902463655532,2582,Decile 4,Quintile 2,1,1910,0.2119631561424925
+E02006631,Worthing 011,Worthing Central,25.682765650543324,2122,Decile 4,Quintile 2,0,0,0
+E02006632,Worthing 012,West Worthing,8.086423238004068,6079,Decile 9,Quintile 5 (least deprived 20%),0,0,0
+E02006633,Worthing 013,Goring-by-Sea,8.261200735992402,6038,Decile 9,Quintile 5 (least deprived 20%),0,0,0
